@@ -45,7 +45,7 @@ struct SearchView: View {
                     Spacer()
                 } else {
                     List(viewModel.meals) { meal in
-                        NavigationLink(destination: Text("Meal Detail Coming Soon")) {
+                        NavigationLink(destination: MealDetailView(mealID: meal.id)) {
                             HStack {
                                 AsyncImage(url: meal.thumbnailURL) { phase in
                                     switch phase {

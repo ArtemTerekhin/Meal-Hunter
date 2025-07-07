@@ -57,4 +57,3 @@ struct APIMeal: Decodable {
     let strMeasure19: String?
     let strMeasure20: String?
 }
-

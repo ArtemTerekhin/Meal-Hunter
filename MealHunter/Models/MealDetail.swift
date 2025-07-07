@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct MealDetail: Codable, Identifiable {
+struct MealDetail: Identifiable {
     let id: String
     let name: String
     let instructions: String
@@ -29,13 +29,20 @@ struct MealDetail: Codable, Identifiable {
         self.youtubeURL = URL(string: apiMeal.strYoutube ?? "")
 
         var ingredients: [Ingredient] = []
+        let mirror = Mirror(reflecting: apiMeal)
+
         for i in 1...20 {
-            if let name = apiMeal.value(forKey: "strIngredient\(i)") as? String,
-               let measure = apiMeal.value(forKey: "strMeasure\(i)") as? String,
-               !name.trimmingCharacters(in: .whitespaces).isEmpty {
-                ingredients.append(Ingredient(name: name, measure: measure))
+            guard
+                let name = mirror.children.first(where: { $0.label == "strIngredient\(i)" })?.value as? String,
+                let measure = mirror.children.first(where: { $0.label == "strMeasure\(i)" })?.value as? String,
+                !name.trimmingCharacters(in: .whitespaces).isEmpty
+            else {
+                continue
             }
+
+            ingredients.append(Ingredient(name: name, measure: measure))
         }
+
         self.ingredients = ingredients
     }
 }
