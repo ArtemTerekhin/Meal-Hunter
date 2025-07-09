@@ -9,10 +9,10 @@ import Foundation
 
 final class APIService {
     static let shared = APIService()
-
     private init() {}
 
-    func fetch<T: Decodable>(_ type: T.Type, from url: URL) async throws -> T {
+    func request<T: Decodable>(_ endpoint: APIEndpoint) async throws -> T {
+        let url = endpoint.url
         let (data, response) = try await URLSession.shared.data(from: url)
 
         guard let httpResponse = response as? HTTPURLResponse,

@@ -23,7 +23,7 @@ final class SearchViewModel: ObservableObject {
         let endpoint = APIEndpoint.searchByIngredient(query)
 
         do {
-            let response = try await APIService.shared.fetch(MealSummaryResponse.self, from: endpoint.url)
+            let response: MealSummaryResponse = try await APIService.shared.request(endpoint)
             meals = response.meals ?? []
         } catch {
             errorMessage = error.localizedDescription
