@@ -15,12 +15,6 @@ struct MealDetail: Identifiable {
     let youtubeURL: URL?
     let ingredients: [Ingredient]
 
-    struct Ingredient: Identifiable {
-        let id = UUID()
-        let name: String
-        let measure: String
-    }
-
     init(from apiMeal: APIMeal) {
         self.id = apiMeal.idMeal
         self.name = apiMeal.strMeal
@@ -28,8 +22,8 @@ struct MealDetail: Identifiable {
         self.thumbnail = URL(string: apiMeal.strMealThumb ?? "")
         self.youtubeURL = URL(string: apiMeal.strYoutube ?? "")
 
-        self.ingredients = apiMeal.ingredients.map {
-            Ingredient(name: $0.ingredient, measure: $0.measure)
+        self.ingredients = apiMeal.ingredientsList.map {
+            Ingredient(name: $0.name, measure: $0.measure)
         }
     }
 }

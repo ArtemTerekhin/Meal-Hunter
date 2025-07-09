@@ -13,20 +13,6 @@ struct SearchView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                HStack {
-                    TextField("Enter ingredient", text: $viewModel.query)
-                        .textFieldStyle(.roundedBorder)
-                        .submitLabel(.search)
-
-                    Button("Search") {
-                        Task {
-                            await viewModel.search()
-                        }
-                    }
-                    .disabled(viewModel.query.trimmingCharacters(in: .whitespaces).isEmpty)
-                }
-                .padding()
-
                 if viewModel.isLoading {
                     Spacer()
                     ProgressView()
@@ -38,7 +24,7 @@ struct SearchView: View {
                         .multilineTextAlignment(.center)
                         .padding()
                     Spacer()
-                } else if viewModel.meals.isEmpty {
+                } else if viewModel.meals.isEmpty && !viewModel.query.isEmpty {
                     Spacer()
                     Text("No meals found.")
                         .foregroundColor(.gray)
@@ -77,6 +63,12 @@ struct SearchView: View {
                 }
             }
             .navigationTitle("Meal Hunter")
+            .searchable(text: $viewModel.query, prompt: "Enter ingredient")
+            .onSubmit(of: .search) {
+                Task {
+                    await viewModel.search()
+                }
+            }
         }
     }
 }

@@ -45,7 +45,6 @@ struct MealDetailView: View {
                         }
                     }
 
-
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Ingredients")
                             .font(.headline)

@@ -14,28 +14,14 @@ struct APIMeal: Decodable {
     let strMealThumb: String?
     let strYoutube: String?
 
-    struct IngredientMeasure {
-        let ingredient: String
-        let measure: String
-    }
-
-    let ingredients: [IngredientMeasure]
+    let ingredientsList: [Ingredient]
 
     enum CodingKeys: String, CodingKey {
-        case idMeal, strMeal, strInstructions, strMealThumb, strYoutube
-    }
-
-    struct DynamicKeys: CodingKey {
-        var stringValue: String
-        var intValue: Int? { nil }
-
-        init?(stringValue: String) {
-            self.stringValue = stringValue
-        }
-
-        init?(intValue: Int) {
-            return nil
-        }
+        case idMeal
+        case strMeal
+        case strInstructions
+        case strMealThumb
+        case strYoutube
     }
 
     init(from decoder: Decoder) throws {
@@ -47,22 +33,35 @@ struct APIMeal: Decodable {
         strMealThumb = try container.decodeIfPresent(String.self, forKey: .strMealThumb)
         strYoutube = try container.decodeIfPresent(String.self, forKey: .strYoutube)
 
-        let dynamicContainer = try decoder.container(keyedBy: DynamicKeys.self)
+        let dynamicContainer = try decoder.container(keyedBy: DynamicCodingKey.self)
 
-        var tempIngredients: [IngredientMeasure] = []
+        var tempIngredients: [Ingredient] = []
 
         for i in 1...20 {
-            let ingredientKey = DynamicKeys(stringValue: "strIngredient\(i)")!
-            let measureKey = DynamicKeys(stringValue: "strMeasure\(i)")!
+            guard
+                let ingredientKey = DynamicCodingKey(stringValue: "strIngredient\(i)"),
+                let measureKey = DynamicCodingKey(stringValue: "strMeasure\(i)")
+            else {
+                continue
+            }
 
-            if let ingredient = try dynamicContainer.decodeIfPresent(String.self, forKey: ingredientKey),
-               let measure = try dynamicContainer.decodeIfPresent(String.self, forKey: measureKey),
-               !ingredient.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            let ingredient = (try dynamicContainer.decodeIfPresent(String.self, forKey: ingredientKey) ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+            let measure = (try dynamicContainer.decodeIfPresent(String.self, forKey: measureKey) ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
 
-                tempIngredients.append(IngredientMeasure(ingredient: ingredient, measure: measure))
+            if !ingredient.isEmpty {
+                tempIngredients.append(Ingredient(name: ingredient, measure: measure))
             }
         }
 
-        ingredients = tempIngredients
+        ingredientsList = tempIngredients
     }
 }
+
+struct DynamicCodingKey: CodingKey {
+    var stringValue: String
+    init?(stringValue: String) { self.stringValue = stringValue }
+
+    var intValue: Int? { nil }
+    init?(intValue: Int) { nil }
+}
+
