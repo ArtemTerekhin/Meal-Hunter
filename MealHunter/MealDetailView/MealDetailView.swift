@@ -66,5 +66,11 @@ struct MealDetailView: View {
         .task {
             await viewModel.loadMeal()
         }
+        .alert("Error", isPresented: $viewModel.showAlert, actions: {
+            Button("OK", role: .cancel) { }
+        }, message: {
+            Text(viewModel.errorMessage ?? "Unknown error")
+        })
+
     }
 }

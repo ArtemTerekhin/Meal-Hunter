@@ -12,6 +12,7 @@ final class MealDetailViewModel: ObservableObject {
     @Published var meal: MealDetail?
     @Published var isLoading: Bool = false
     @Published var errorMessage: String?
+    @Published var showAlert = false
 
     private let service: MealAPIServiceProtocol
     private let mealID: String
@@ -30,6 +31,7 @@ final class MealDetailViewModel: ObservableObject {
             self.meal = detail
         } catch {
             self.errorMessage = error.localizedDescription
+            showAlert = true
         }
 
         isLoading = false

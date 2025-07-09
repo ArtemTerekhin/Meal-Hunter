@@ -13,10 +13,21 @@ protocol MealAPIServiceProtocol {
 
 final class MealAPIService: MealAPIServiceProtocol {
     func fetchMealDetail(id: String) async throws -> MealDetail {
-        let response: MealDetailResponse = try await APIService.shared.request(.mealDetail(id))
+        guard let url = URL(string: "https://www.themealdb.com/api/json/v1/1/lookup.php?i=\(id)") else {
+            throw URLError(.badURL)
+        }
 
-        guard let apiMeal = response.meals.first else {
-            throw NSError(domain: "MealDetailError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Meal not found"])
+        let (data, response) = try await URLSession.shared.data(from: url)
+
+        guard let httpResponse = response as? HTTPURLResponse,
+              (200...299).contains(httpResponse.statusCode) else {
+            throw APIError.invalidResponse
+        }
+
+        let result = try JSONDecoder().decode(MealDetailResponse.self, from: data)
+
+        guard let apiMeal = result.meals.first else {
+            throw APIError.mealNotFound
         }
 
         return MealDetail(from: apiMeal)
