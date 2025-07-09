@@ -14,21 +14,11 @@ struct SearchView: View {
         NavigationStack {
             VStack {
                 if viewModel.isLoading {
-                    Spacer()
-                    ProgressView()
-                    Spacer()
+                    LoadingView()
                 } else if let error = viewModel.errorMessage {
-                    Spacer()
-                    Text(error)
-                        .foregroundColor(.red)
-                        .multilineTextAlignment(.center)
-                        .padding()
-                    Spacer()
-                } else if viewModel.meals.isEmpty && !viewModel.query.isEmpty {
-                    Spacer()
-                    Text("No meals found.")
-                        .foregroundColor(.gray)
-                    Spacer()
+                    ErrorView(message: error)
+                } else if viewModel.meals.isEmpty {
+                    EmptyViewState(message: "No meals found.")
                 } else {
                     List(viewModel.meals) { meal in
                         NavigationLink(destination: MealDetailView(mealID: meal.id)) {

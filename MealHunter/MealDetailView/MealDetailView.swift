@@ -17,13 +17,9 @@ struct MealDetailView: View {
     var body: some View {
         ScrollView {
             if viewModel.isLoading {
-                ProgressView()
-                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                LoadingView()
             } else if let error = viewModel.errorMessage {
-                Text(error)
-                    .foregroundColor(.red)
-                    .multilineTextAlignment(.center)
-                    .padding()
+                ErrorView(message: error)
             } else if let meal = viewModel.meal {
                 VStack(alignment: .leading, spacing: 16) {
                     if let url = meal.thumbnail {
