@@ -33,25 +33,7 @@ struct SearchView: View {
                     List(viewModel.meals) { meal in
                         NavigationLink(destination: MealDetailView(mealID: meal.id)) {
                             HStack {
-                                AsyncImage(url: meal.thumbnailURL) { phase in
-                                    switch phase {
-                                    case .empty:
-                                        ProgressView()
-                                            .frame(width: 60, height: 60)
-                                    case .success(let image):
-                                        image
-                                            .resizable()
-                                            .scaledToFill()
-                                            .frame(width: 60, height: 60)
-                                            .clipShape(RoundedRectangle(cornerRadius: 8))
-                                    case .failure:
-                                        Color.gray
-                                            .frame(width: 60, height: 60)
-                                            .clipShape(RoundedRectangle(cornerRadius: 8))
-                                    @unknown default:
-                                        EmptyView()
-                                    }
-                                }
+                                RemoteImageView(url: meal.thumbnailURL, width: 60, height: 60)
 
                                 Text(meal.name)
                                     .font(.headline)

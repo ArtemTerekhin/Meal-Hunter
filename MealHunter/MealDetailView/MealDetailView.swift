@@ -27,22 +27,7 @@ struct MealDetailView: View {
             } else if let meal = viewModel.meal {
                 VStack(alignment: .leading, spacing: 16) {
                     if let url = meal.thumbnail {
-                        AsyncImage(url: url) { phase in
-                            switch phase {
-                            case .empty:
-                                ProgressView()
-                            case .success(let image):
-                                image
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(height: 240)
-                                    .clipped()
-                            case .failure:
-                                Color.gray.frame(height: 240)
-                            @unknown default:
-                                EmptyView()
-                            }
-                        }
+                        RemoteImageView(url: meal.thumbnail, height: 240, cornerRadius: 0)
                     }
 
                     VStack(alignment: .leading, spacing: 4) {

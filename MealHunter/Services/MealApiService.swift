@@ -13,8 +13,7 @@ protocol MealAPIServiceProtocol {
 
 final class MealAPIService: MealAPIServiceProtocol {
     func fetchMealDetail(id: String) async throws -> MealDetail {
-        let endpoint = APIEndpoint.mealDetail(id)
-        let response: MealDetailResponse = try await APIService.shared.request(endpoint)
+        let response: MealDetailResponse = try await APIService.shared.request(.mealDetail(id))
 
         guard let apiMeal = response.meals.first else {
             throw NSError(domain: "MealDetailError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Meal not found"])
