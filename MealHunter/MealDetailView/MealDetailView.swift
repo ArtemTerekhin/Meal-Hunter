@@ -26,7 +26,6 @@ struct MealDetailView: View {
                     .padding()
             } else if let meal = viewModel.meal {
                 VStack(alignment: .leading, spacing: 16) {
-                    // 📸 Image
                     if let url = meal.thumbnail {
                         AsyncImage(url: url) { phase in
                             switch phase {
@@ -46,13 +45,7 @@ struct MealDetailView: View {
                         }
                     }
 
-                    // 🏷 Название
-                    Text(meal.name)
-                        .font(.title)
-                        .bold()
-                        .padding(.horizontal)
 
-                    // 🧂 Ингредиенты
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Ingredients")
                             .font(.headline)
@@ -63,7 +56,6 @@ struct MealDetailView: View {
                     }
                     .padding(.horizontal)
 
-                    // 📖 Инструкции
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Instructions")
                             .font(.headline)
@@ -72,7 +64,6 @@ struct MealDetailView: View {
                     }
                     .padding(.horizontal)
 
-                    // ▶️ Видео
                     if let youtubeURL = meal.youtubeURL {
                         Link(destination: youtubeURL) {
                             Label("Watch on YouTube", systemImage: "play.circle.fill")
