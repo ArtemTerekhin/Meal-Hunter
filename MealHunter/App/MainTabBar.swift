@@ -8,7 +8,12 @@
 import SwiftUI
 
 struct MainTabView: View {
-    @State private var selectedTab = 1
+    enum Tab: Int {
+        case favorites = 0
+        case search = 1
+    }
+
+    @State private var selectedTab: Tab = .search
 
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -17,14 +22,16 @@ struct MainTabView: View {
                     Image(systemName: "star.fill")
                     Text("Favorites")
                 }
-                .tag(0)
+                .tag(Tab.favorites)
 
             SearchView()
                 .tabItem {
                     Image(systemName: "fork.knife")
                     Text("Search")
                 }
-                .tag(1)
+                .tag(Tab.search)
         }
+        .accessibilityElement(children: .contain)
+        .accessibilityLabel("Main Tab View")
     }
 }
