@@ -31,24 +31,8 @@ struct FavoritesView: View {
                         NavigationLink(destination: MealDetailView(mealID: meal.id)) {
                             HStack {
                                 if let url = meal.thumbnail {
-                                    AsyncImage(url: url) { phase in
-                                        switch phase {
-                                        case .empty:
-                                            ProgressView()
-                                                .frame(width: 60, height: 60)
-                                        case .success(let image):
-                                            image
-                                                .resizable()
-                                                .scaledToFill()
-                                                .frame(width: 60, height: 60)
-                                                .clipShape(RoundedRectangle(cornerRadius: 8))
-                                        case .failure:
-                                            Color.gray
-                                                .frame(width: 60, height: 60)
-                                        @unknown default:
-                                            EmptyView()
-                                        }
-                                    }
+                                    RemoteImageView(url: url, width: 60, height: 60, cornerRadius: 8)
+                                        .frame(width: 60, height: 60)
                                 }
 
                                 Text(meal.name)
@@ -61,6 +45,7 @@ struct FavoritesView: View {
             }
             .navigationTitle("Favorites")
             .task {
+                await viewModel.setupFavoritesManager()
                 viewModel.setContext(modelContext)
                 await viewModel.loadFavoriteMeals()
             }
