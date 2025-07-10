@@ -39,13 +39,16 @@ struct SearchView: View {
             }
             .navigationTitle("Meal Hunter")
             .toolbar {
-                ToolbarItem(placement: .bottomBar) {
+                ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         Task {
                             await viewModel.loadRandomMeal()
                         }
                     } label: {
-                        Image(systemName: "die.face.5.fill")
+                        HStack {
+                            Text("Random Meal")
+                            Image(systemName: "die.face.5.fill")
+                        }
                     }
                 }
             }
