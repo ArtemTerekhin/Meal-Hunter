@@ -9,8 +9,8 @@ import SwiftUI
 
 struct RemoteImageView: View {
     let url: URL?
-    var width: CGFloat? = nil
-    var height: CGFloat? = nil
+    var width: CGFloat?
+    var height: CGFloat?
     var cornerRadius: CGFloat = 8
 
     var body: some View {
