@@ -11,6 +11,7 @@ enum APIEndpoint {
     case searchByIngredient(String)
     case mealDetail(String)
     case randomMeal
+    case searchByFirstLetter(String)
 
     var url: URL {
         switch self {
@@ -23,7 +24,10 @@ enum APIEndpoint {
 
         case .randomMeal:
             return URL(string: "https://www.themealdb.com/api/json/v1/1/random.php")!
+
+        case .searchByFirstLetter(let letter):
+            let encoded = letter.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? ""
+            return URL(string: "https://www.themealdb.com/api/json/v1/1/search.php?f=\(encoded)")!
         }
     }
 }
-

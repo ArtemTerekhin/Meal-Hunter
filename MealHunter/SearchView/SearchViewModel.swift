@@ -14,10 +14,30 @@ final class SearchViewModel: ObservableObject {
     @Published var isLoading: Bool = false
     @Published var errorMessage: String?
     @Published var randomMealId: String?
+    @Published var initialMeals: [MealSummary] = []
+
+    func loadInitialMeals() async {
+        isLoading = true
+        errorMessage = nil
+
+        do {
+            let response: MealSummaryResponse = try await APIService.shared.request(.searchByFirstLetter("b"))
+            initialMeals = response.meals ?? []
+            meals = initialMeals
+        } catch {
+            errorMessage = error.localizedDescription
+            initialMeals = []
+            meals = []
+        }
+
+        isLoading = false
+    }
 
     func search() async {
-        guard !query.trimmingCharacters(in: .whitespaces).isEmpty else { return }
-
+        guard !query.trimmingCharacters(in: .whitespaces).isEmpty else {
+            meals = initialMeals
+            return
+        }
         isLoading = true
         errorMessage = nil
 

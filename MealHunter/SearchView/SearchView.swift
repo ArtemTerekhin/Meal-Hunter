@@ -34,6 +34,9 @@ struct SearchView: View {
                     .listStyle(.plain)
                 }
             }
+            .task {
+                await viewModel.loadInitialMeals()
+            }
             .navigationTitle("Meal Hunter")
             .toolbar {
                 ToolbarItem(placement: .bottomBar) {
