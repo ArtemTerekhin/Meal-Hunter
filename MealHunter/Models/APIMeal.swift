@@ -37,16 +37,19 @@ struct APIMeal: Decodable {
 
         var tempIngredients: [Ingredient] = []
 
-        for i in 1...20 {
+        for index in 1...20 {
             guard
-                let ingredientKey = DynamicCodingKey(stringValue: "strIngredient\(i)"),
-                let measureKey = DynamicCodingKey(stringValue: "strMeasure\(i)")
+                let ingredientKey = DynamicCodingKey(stringValue: "strIngredient\(index)"),
+                let measureKey = DynamicCodingKey(stringValue: "strMeasure\(index)")
             else {
                 continue
             }
 
-            let ingredient = (try dynamicContainer.decodeIfPresent(String.self, forKey: ingredientKey) ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
-            let measure = (try dynamicContainer.decodeIfPresent(String.self, forKey: measureKey) ?? "").trimmingCharacters(in: .whitespacesAndNewlines)
+            let ingredient = (try dynamicContainer.decodeIfPresent(String.self, forKey: ingredientKey) ?? "")
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+
+            let measure = (try dynamicContainer.decodeIfPresent(String.self, forKey: measureKey) ?? "")
+                .trimmingCharacters(in: .whitespacesAndNewlines)
 
             if !ingredient.isEmpty {
                 tempIngredients.append(Ingredient(name: ingredient, measure: measure))
@@ -64,3 +67,4 @@ struct DynamicCodingKey: CodingKey {
     var intValue: Int? { nil }
     init?(intValue: Int) { nil }
 }
+
