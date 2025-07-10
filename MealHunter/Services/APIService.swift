@@ -12,7 +12,9 @@ final class APIService {
     private init() {}
 
     func request<T: Decodable>(_ endpoint: APIEndpoint) async throws -> T {
-        let url = endpoint.url
+        guard let url = endpoint.url else {
+            throw APIError.invalidResponse
+        }
         let (data, response) = try await URLSession.shared.data(from: url)
 
         guard let httpResponse = response as? HTTPURLResponse,
