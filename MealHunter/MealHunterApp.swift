@@ -6,12 +6,14 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct MealHunterApp: App {
     var body: some Scene {
         WindowGroup {
-            SearchView()
+            MainTabView()
+                .modelContainer(for: [FavoriteMeal.self])
         }
     }
 }

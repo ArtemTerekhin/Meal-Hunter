@@ -6,9 +6,12 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct MealDetailView: View {
     @StateObject private var viewModel: MealDetailViewModel
+    @Environment(\.modelContext) private var modelContext
+    @ObservedObject private var favoritesManager = FavoritesManager.shared
 
     init(mealID: String) {
         _viewModel = StateObject(wrappedValue: MealDetailViewModel(mealID: mealID))
@@ -27,6 +30,28 @@ struct MealDetailView: View {
                     }
 
                     VStack(alignment: .leading, spacing: 12) {
+                        HStack {
+                            Text(meal.name)
+                                .font(.largeTitle)
+
+                            Spacer()
+
+                            Button(
+                                action: {
+                                    viewModel.toggleFavorite()
+                                },
+                                label: {
+                                    Image(systemName: favoritesManager.isFavorite(id: meal.id) ? "star.fill" : "star")
+                                        .font(.system(size: 22))
+                                        .foregroundColor(.yellow)
+                                        .padding(8)
+                                        .background(Color.yellow.opacity(0.2))
+                                        .clipShape(Circle())
+                                }
+                            )
+                            .buttonStyle(.plain)
+                        }
+
                         Text("Ingredients")
                             .font(.headline)
 
@@ -70,6 +95,9 @@ struct MealDetailView: View {
                 }
                 .padding(.top)
             }
+        }
+        .onAppear {
+            favoritesManager.setContext(modelContext)
         }
         .navigationTitle("Meal Details")
         .navigationBarTitleDisplayMode(.inline)
