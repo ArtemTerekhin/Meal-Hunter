@@ -34,6 +34,6 @@ final class MealAPIService: MealAPIServiceProtocol {
     }
 }
 
-private struct MealDetailResponse: Decodable {
+struct MealDetailResponse: Decodable {
     let meals: [APIMeal]
 }

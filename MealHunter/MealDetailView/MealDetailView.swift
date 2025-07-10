@@ -26,19 +26,25 @@ struct MealDetailView: View {
                         RemoteImageView(url: meal.thumbnail, height: 240, cornerRadius: 0)
                     }
 
-                    VStack(alignment: .leading, spacing: 4) {
+                    VStack(alignment: .leading, spacing: 12) {
                         Text("Ingredients")
                             .font(.headline)
+
                         ForEach(meal.ingredients) { ingredient in
-                            Text("• \(ingredient.name) — \(ingredient.measure)")
-                                .font(.body)
+                            HStack(alignment: .top) {
+                                Text("•")
+
+                                Text("\(ingredient.name) – \(ingredient.measure)")
+                            }
+                            .font(.body)
                         }
                     }
                     .padding(.horizontal)
 
-                    VStack(alignment: .leading, spacing: 4) {
+                    VStack(alignment: .leading, spacing: 12) {
                         Text("Instructions")
                             .font(.headline)
+
                         Text(meal.instructions)
                             .font(.body)
                     }
@@ -46,13 +52,17 @@ struct MealDetailView: View {
 
                     if let youtubeURL = meal.youtubeURL {
                         Link(destination: youtubeURL) {
-                            Label("Watch on YouTube", systemImage: "play.circle.fill")
-                                .font(.headline)
-                                .padding()
+                            HStack {
+                                Image(systemName: "play.circle.fill")
+                                Text("Watch on YouTube")
+                            }
+                            .font(.headline)
+                            .foregroundColor(.red)
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(Color.red.opacity(0.1))
+                            .cornerRadius(12)
                         }
-                        .frame(maxWidth: .infinity)
-                        .background(Color.red.opacity(0.1))
-                        .cornerRadius(10)
                         .padding(.horizontal)
                     }
 

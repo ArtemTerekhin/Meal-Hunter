@@ -35,10 +35,29 @@ struct SearchView: View {
                 }
             }
             .navigationTitle("Meal Hunter")
+            .toolbar {
+                ToolbarItem(placement: .bottomBar) {
+                    Button {
+                        Task {
+                            await viewModel.loadRandomMeal()
+                        }
+                    } label: {
+                        Image(systemName: "die.face.5.fill")
+                    }
+                }
+            }
             .searchable(text: $viewModel.query, prompt: "Enter ingredient")
             .onSubmit(of: .search) {
                 Task {
                     await viewModel.search()
+                }
+            }
+            .navigationDestination(isPresented: Binding<Bool>(
+                get: { viewModel.randomMealId != nil },
+                set: { if !$0 { viewModel.randomMealId = nil } }
+            )) {
+                if let id = viewModel.randomMealId {
+                    MealDetailView(mealID: id)
                 }
             }
         }
