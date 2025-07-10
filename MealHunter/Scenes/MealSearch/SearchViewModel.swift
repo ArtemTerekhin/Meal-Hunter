@@ -11,41 +11,36 @@ import Foundation
 final class SearchViewModel: ObservableObject {
     @Published var query: String = ""
     @Published var meals: [MealSummary] = []
-    @Published var isLoading: Bool = false
+    @Published var isLoading = false
     @Published var errorMessage: String?
     @Published var randomMealId: String?
-    @Published var initialMeals: [MealSummary] = []
+
+    private var cachedMeals: [MealSummary] = []
 
     func loadInitialMeals() async {
-        isLoading = true
-        errorMessage = nil
-
-        do {
-            let response: MealSummaryResponse = try await APIService.shared.request(.searchByFirstLetter("b"))
-            initialMeals = response.meals ?? []
-            meals = initialMeals
-        } catch {
-            errorMessage = error.localizedDescription
-            initialMeals = []
-            meals = []
-        }
-
-        isLoading = false
+        await loadMeals(from: .searchByFirstLetter("b"), cache: true)
     }
 
     func search() async {
-        guard !query.trimmingCharacters(in: .whitespaces).isEmpty else {
-            meals = initialMeals
+        let trimmed = query.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else {
+            meals = cachedMeals
             return
         }
+
+        await loadMeals(from: .searchByIngredient(trimmed))
+    }
+
+    private func loadMeals(from endpoint: APIEndpoint, cache: Bool = false) async {
         isLoading = true
         errorMessage = nil
-
-        let endpoint = APIEndpoint.searchByIngredient(query)
 
         do {
             let response: MealSummaryResponse = try await APIService.shared.request(endpoint)
             meals = response.meals ?? []
+            if cache {
+                cachedMeals = meals
+            }
         } catch {
             errorMessage = error.localizedDescription
             meals = []

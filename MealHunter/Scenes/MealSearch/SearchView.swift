@@ -13,29 +13,14 @@ struct SearchView: View {
     var body: some View {
         NavigationStack {
             VStack {
-                if viewModel.isLoading {
-                    LoadingView()
-                } else if let error = viewModel.errorMessage {
-                    ErrorView(message: error)
-                } else if viewModel.meals.isEmpty {
-                    EmptyViewState(message: "No meals found.")
-                } else {
-                    List(viewModel.meals) { meal in
-                        NavigationLink(destination: MealDetailView(mealID: meal.id)) {
-                            HStack {
-                                RemoteImageView(url: meal.thumbnailURL, width: 60, height: 60)
-
-                                Text(meal.name)
-                                    .font(.headline)
-                                    .padding(.leading, 8)
-                            }
-                        }
-                    }
-                    .listStyle(.plain)
-                }
+                content
             }
             .task {
-                await viewModel.loadInitialMeals()
+                if viewModel.query.isEmpty {
+                    await viewModel.loadInitialMeals()
+                } else {
+                    await viewModel.search()
+                }
             }
             .navigationTitle("Meal Hunter")
             .toolbar {
@@ -45,10 +30,7 @@ struct SearchView: View {
                             await viewModel.loadRandomMeal()
                         }
                     } label: {
-                        HStack {
-                            Text("Random Meal")
-                            Image(systemName: "die.face.5.fill")
-                        }
+                        Label("Random Meal", systemImage: "die.face.5.fill")
                     }
                 }
             }
@@ -66,6 +48,29 @@ struct SearchView: View {
                     MealDetailView(mealID: id)
                 }
             }
+        }
+    }
+
+    @ViewBuilder
+    private var content: some View {
+        if viewModel.isLoading {
+            LoadingView()
+        } else if let error = viewModel.errorMessage {
+            ErrorView(message: error)
+        } else if viewModel.meals.isEmpty {
+            EmptyViewState(message: "No meals found.")
+        } else {
+            List(viewModel.meals) { meal in
+                NavigationLink(destination: MealDetailView(mealID: meal.id)) {
+                    HStack {
+                        RemoteImageView(url: meal.thumbnailURL, width: 60, height: 60)
+                        Text(meal.name)
+                            .font(.headline)
+                            .padding(.leading, 8)
+                    }
+                }
+            }
+            .listStyle(.plain)
         }
     }
 }
