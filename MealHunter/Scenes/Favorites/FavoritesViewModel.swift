@@ -14,23 +14,22 @@ final class FavoritesViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var errorMessage: String?
 
-    @MainActor private var favoritesManager: FavoritesManager?
-    private var apiService: APIService
+    private var favoritesManager: any FavoritesManagerProtocol
+    private var apiService: APIServiceProtocol
 
-    init(apiService: APIService = APIService.shared) {
+    init(
+        favoritesManager: any FavoritesManagerProtocol = FavoritesManager.shared,
+        apiService: APIServiceProtocol = APIService.shared
+    ) {
+        self.favoritesManager = favoritesManager
         self.apiService = apiService
     }
 
-    func setupFavoritesManager() {
-        favoritesManager = FavoritesManager.shared
-    }
-
     func setContext(_ context: ModelContext) {
-        favoritesManager?.setContext(context)
+        favoritesManager.setContext(context)
     }
 
     func loadFavoriteMeals() async {
-        guard let favoritesManager = favoritesManager else { return }
         isLoading = true
         errorMessage = nil
         meals = []
@@ -56,6 +55,7 @@ final class FavoritesViewModel: ObservableObject {
         } catch {
             errorMessage = error.localizedDescription
         }
+
         isLoading = false
     }
 }

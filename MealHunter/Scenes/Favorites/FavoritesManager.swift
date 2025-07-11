@@ -9,13 +9,22 @@ import Foundation
 import SwiftData
 
 @MainActor
-final class FavoritesManager: ObservableObject {
+protocol FavoritesManagerProtocol: ObservableObject {
+    var favorites: [FavoriteMeal] { get }
+    func setContext(_ context: ModelContext)
+    func fetchFavorites()
+    func isFavorite(id: String) -> Bool
+    func add(id: String)
+    func remove(id: String)
+}
+
+final class FavoritesManager: ObservableObject, FavoritesManagerProtocol {
     static let shared = FavoritesManager()
 
     @Published private(set) var favorites: [FavoriteMeal] = []
     private var modelContext: ModelContext?
 
-    init() {}
+    private init() {}
 
     func setContext(_ context: ModelContext) {
         self.modelContext = context
@@ -59,5 +68,31 @@ final class FavoritesManager: ObservableObject {
         } catch {
             print("Save failed: \(error)")
         }
+    }
+}
+
+final class MockFavoritesManager: FavoritesManagerProtocol {
+    @Published var favorites: [FavoriteMeal] = []
+
+    func setContext(_ context: ModelContext) {
+        // noop
+    }
+
+    func fetchFavorites() {
+        // noop
+    }
+
+    func isFavorite(id: String) -> Bool {
+        favorites.contains { $0.id == id }
+    }
+
+    func add(id: String) {
+        if !favorites.contains(where: { $0.id == id }) {
+            favorites.append(FavoriteMeal(id: id))
+        }
+    }
+
+    func remove(id: String) {
+        favorites.removeAll { $0.id == id }
     }
 }

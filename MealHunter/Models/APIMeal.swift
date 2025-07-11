@@ -68,3 +68,20 @@ struct DynamicCodingKey: CodingKey {
     init?(intValue: Int) { nil }
 }
 
+extension APIMeal {
+    init(
+        idMeal: String,
+        strMeal: String,
+        strInstructions: String? = nil,
+        strMealThumb: String? = nil,
+        strYoutube: String? = nil,
+        ingredientsList: [Ingredient] = []
+    ) {
+        self.idMeal = idMeal
+        self.strMeal = strMeal
+        self.strInstructions = strInstructions
+        self.strMealThumb = strMealThumb
+        self.strYoutube = strYoutube
+        self.ingredientsList = ingredientsList
+    }
+}

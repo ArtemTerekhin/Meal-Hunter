@@ -45,7 +45,6 @@ struct FavoritesView: View {
             }
             .navigationTitle("Favorites")
             .task {
-                viewModel.setupFavoritesManager()
                 viewModel.setContext(modelContext)
                 await viewModel.loadFavoriteMeals()
             }
