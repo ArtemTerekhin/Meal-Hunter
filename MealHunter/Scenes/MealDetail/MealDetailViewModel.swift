@@ -14,9 +14,9 @@ final class MealDetailViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var errorMessage: String?
     @Published var showAlert = false
-    @Published private(set) var isFavorite = false
+    @Published var isFavorite = false
 
-    private var favoritesManager: FavoritesManagerProtocol
+    private var favoritesManager: any FavoritesManagerProtocol
     private let service: MealAPIServiceProtocol
     private let mealID: String
 

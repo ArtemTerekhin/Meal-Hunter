@@ -10,7 +10,7 @@ import Foundation
 struct AppEnvironment {
     let apiService: APIServiceProtocol
     let mealAPIService: MealAPIServiceProtocol
-    let favoritesManager: FavoritesManagerProtocol
+    let favoritesManager: any FavoritesManagerProtocol
 
     static let live = AppEnvironment(
         apiService: APIService(),

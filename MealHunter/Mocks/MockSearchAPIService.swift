@@ -12,7 +12,7 @@ final class MockSearchAPIService: APIServiceProtocol {
     var detailToReturn: APIMeal?
     var shouldFail = false
 
-    func request<T>(_ endpoint: APIEndpoint) async throws -> T where T : Decodable {
+    func request<T>(_ endpoint: APIEndpoint) async throws -> T where T: Decodable {
         if shouldFail {
             throw APIError.invalidResponse
         }

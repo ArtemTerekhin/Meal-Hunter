@@ -27,3 +27,21 @@ struct MealDetail: Identifiable {
         }
     }
 }
+
+extension MealDetail {
+    init(
+        id: String = UUID().uuidString,
+        name: String = "",
+        instructions: String = "",
+        thumbnail: URL? = nil,
+        youtubeURL: URL? = nil,
+        ingredients: [Ingredient] = []
+    ) {
+        self.id = id
+        self.name = name
+        self.instructions = instructions
+        self.thumbnail = thumbnail
+        self.youtubeURL = youtubeURL
+        self.ingredients = ingredients
+    }
+}

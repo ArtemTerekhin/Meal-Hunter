@@ -45,7 +45,7 @@ final class SearchViewModel: ObservableObject {
         errorMessage = nil
 
         do {
-            let response: MealSummaryResponse = try await APIService.shared.request(endpoint)
+            let response: MealSummaryResponse = try await apiService.request(endpoint)
             meals = response.meals ?? []
             if cache {
                 cachedMeals = meals
@@ -63,7 +63,7 @@ final class SearchViewModel: ObservableObject {
         errorMessage = nil
 
         do {
-            let response: MealDetailResponse = try await APIService.shared.request(.randomMeal)
+            let response: MealDetailResponse = try await apiService.request(.randomMeal)
             if let meal = response.meals.first {
                 randomMealId = meal.idMeal
             } else {

@@ -1,66 +1,86 @@
 //
 //  FavoritesTests.swift
-//  MealHunter
+//  MealHunterTests
 //
-//  Created by Artem Terekhin on 10.07.2025.
+//  Created by Artem Terekhin on 25.07.2025.
 //
 
 import Foundation
 import Testing
 @testable import MealHunter
 
-struct FavoritesTests {
+struct FavoritesViewModelTests {
     @Test
-    func testLoadFavoriteMeals_Success() async throws {
+    func testLoadFavoriteMeals_success() async throws {
         let mockAPI = MockAPIService()
-        let mockFavoritesManager = await MockFavoritesManager()
+        mockAPI.mealsToReturn = [
+            APIMeal(idMeal: "1", strMeal: "Pizza", ingredientsList: []),
+            APIMeal(idMeal: "2", strMeal: "Burger", ingredientsList: [])
+        ]
 
-        await MainActor.run {
-            mockFavoritesManager.favorites = [
-                FavoriteMeal(id: "1"),
-                FavoriteMeal(id: "2")
-            ]
-        }
+        let mockFavorites = MockFavoritesManager()
+        mockFavorites.favorites = [
+            FavoriteMeal(id: "1"),
+            FavoriteMeal(id: "2")
+        ]
 
-        let viewModel = await FavoritesViewModel(
-            favoritesManager: mockFavoritesManager,
-            apiService: mockAPI
+        let environment = AppEnvironment(
+            apiService: mockAPI,
+            mealAPIService: MockMealAPIService(),
+            favoritesManager: mockFavorites
         )
 
-        mockAPI.mealsToReturn = [
-            APIMeal(idMeal: "1", strMeal: "Meal 1", ingredientsList: []),
-            APIMeal(idMeal: "2", strMeal: "Meal 2", ingredientsList: [])
-        ]
+        let viewModel = await FavoritesViewModel(environment: environment)
 
         await viewModel.loadFavoriteMeals()
 
-        await #expect(viewModel.isLoading == false)
-        await #expect(viewModel.errorMessage == nil)
         await #expect(viewModel.meals.count == 2)
+        await #expect(viewModel.errorMessage == nil)
+        await #expect(viewModel.isLoading == false)
+        await #expect(viewModel.meals.map(\.name).contains("Pizza"))
     }
 
     @Test
-    func testLoadFavoriteMeals_Failure() async throws {
+    func testLoadFavoriteMeals_failure() async throws {
         let mockAPI = MockAPIService()
-        let mockFavoritesManager = await MockFavoritesManager()
+        mockAPI.shouldReturnError = true
 
-        await MainActor.run {
-            mockFavoritesManager.favorites = [
-                FavoriteMeal(id: "1")
-            ]
-        }
+        let mockFavorites = MockFavoritesManager()
+        mockFavorites.favorites = [FavoriteMeal(id: "1")]
 
-        let viewModel = await FavoritesViewModel(
-            favoritesManager: mockFavoritesManager,
-            apiService: mockAPI
+        let environment = AppEnvironment(
+            apiService: mockAPI,
+            mealAPIService: MockMealAPIService(),
+            favoritesManager: mockFavorites
         )
 
-        mockAPI.shouldReturnError = true
+        let viewModel = await FavoritesViewModel(environment: environment)
 
         await viewModel.loadFavoriteMeals()
 
-        await #expect(viewModel.isLoading == false)
+        await #expect(viewModel.meals.isEmpty)
         await #expect(viewModel.errorMessage != nil)
-        await #expect(viewModel.meals.isEmpty == true)
+        await #expect(viewModel.isLoading == false)
+    }
+
+    @Test
+    func testLoadFavoriteMeals_emptyFavorites() async throws {
+        let mockAPI = MockAPIService()
+        let mockFavorites = MockFavoritesManager()
+        mockFavorites.favorites = []
+
+        let environment = AppEnvironment(
+            apiService: mockAPI,
+            mealAPIService: MockMealAPIService(),
+            favoritesManager: mockFavorites
+        )
+
+        let viewModel = await FavoritesViewModel(environment: environment)
+
+        await viewModel.loadFavoriteMeals()
+
+        await #expect(viewModel.meals.isEmpty)
+        await #expect(viewModel.errorMessage == nil)
+        await #expect(viewModel.isLoading == false)
     }
 }

@@ -9,7 +9,7 @@ final class MockAPIService: APIServiceProtocol {
     var shouldReturnError = false
     var mealsToReturn: [APIMeal] = []
 
-    func request<T>(_ endpoint: APIEndpoint) async throws -> T where T : Decodable {
+    func request<T>(_ endpoint: APIEndpoint) async throws -> T where T: Decodable {
         if shouldReturnError {
             throw APIError.invalidResponse
         }

@@ -24,9 +24,8 @@ final class MockFavoritesManager: FavoritesManagerProtocol {
     }
 
     func add(id: String) {
-        if !favorites.contains(where: { $0.id == id }) {
-            favorites.append(FavoriteMeal(id: id))
-        }
+        guard !isFavorite(id: id) else { return }
+        favorites.append(FavoriteMeal(id: id))
     }
 
     func remove(id: String) {

@@ -14,7 +14,7 @@ final class FavoritesViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var errorMessage: String?
 
-    private var favoritesManager: FavoritesManagerProtocol
+    private var favoritesManager: any FavoritesManagerProtocol
     private let apiService: APIServiceProtocol
 
     init(
