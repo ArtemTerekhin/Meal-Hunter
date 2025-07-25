@@ -10,9 +10,11 @@ import SwiftData
 
 @main
 struct MealHunterApp: App {
+    private let environment = AppEnvironment.live
+
     var body: some Scene {
         WindowGroup {
-            MainTabView()
+            MainTabView(environment: environment)
                 .modelContainer(for: [FavoriteMeal.self])
         }
     }

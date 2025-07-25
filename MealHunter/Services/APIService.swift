@@ -13,7 +13,7 @@ protocol APIServiceProtocol {
 
 final class APIService: APIServiceProtocol {
     static let shared = APIService()
-    private init() {}
+    init() {}
 
     func request<T: Decodable>(_ endpoint: APIEndpoint) async throws -> T {
         guard let url = endpoint.url else {
@@ -32,23 +32,5 @@ final class APIService: APIServiceProtocol {
         } catch {
             throw APIError.decodingError(error)
         }
-    }
-}
-
-final class MockAPIService: APIServiceProtocol {
-    var shouldReturnError = false
-    var mealsToReturn: [APIMeal] = []
-
-    func request<T>(_ endpoint: APIEndpoint) async throws -> T where T : Decodable {
-        if shouldReturnError {
-            throw APIError.invalidResponse
-        }
-
-        if T.self == MealDetailResponse.self {
-            let response = MealDetailResponse(meals: mealsToReturn)
-            return response as! T
-        }
-
-        fatalError("Unsupported request type")
     }
 }

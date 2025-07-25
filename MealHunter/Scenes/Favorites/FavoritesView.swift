@@ -10,7 +10,13 @@ import SwiftData
 
 struct FavoritesView: View {
     @Environment(\.modelContext) private var modelContext
-    @StateObject private var viewModel = FavoritesViewModel()
+    @StateObject private var viewModel: FavoritesViewModel
+    let environment: AppEnvironment
+
+    init(environment: AppEnvironment) {
+        _viewModel = StateObject(wrappedValue: FavoritesViewModel(environment: environment))
+        self.environment = environment
+    }
 
     var body: some View {
         NavigationStack {
@@ -28,7 +34,12 @@ struct FavoritesView: View {
                         .foregroundColor(.gray)
                 } else {
                     List(viewModel.meals) { meal in
-                        NavigationLink(destination: MealDetailView(mealID: meal.id)) {
+                        NavigationLink(
+                            destination: MealDetailView(
+                                mealID: meal.id,
+                                environment: environment
+                            )
+                        ) {
                             HStack {
                                 if let url = meal.thumbnail {
                                     RemoteImageView(url: url, width: 60, height: 60, cornerRadius: 8)

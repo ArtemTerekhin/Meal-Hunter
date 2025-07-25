@@ -14,15 +14,14 @@ final class FavoritesViewModel: ObservableObject {
     @Published var isLoading = false
     @Published var errorMessage: String?
 
-    private var favoritesManager: any FavoritesManagerProtocol
-    private var apiService: APIServiceProtocol
+    private var favoritesManager: FavoritesManagerProtocol
+    private let apiService: APIServiceProtocol
 
     init(
-        favoritesManager: any FavoritesManagerProtocol = FavoritesManager.shared,
-        apiService: APIServiceProtocol = APIService.shared
+        environment: AppEnvironment
     ) {
-        self.favoritesManager = favoritesManager
-        self.apiService = apiService
+        self.favoritesManager = environment.favoritesManager
+        self.apiService = environment.apiService
     }
 
     func setContext(_ context: ModelContext) {

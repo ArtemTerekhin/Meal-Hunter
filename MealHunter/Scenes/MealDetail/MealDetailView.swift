@@ -12,8 +12,13 @@ struct MealDetailView: View {
     @StateObject private var viewModel: MealDetailViewModel
     @Environment(\.modelContext) private var modelContext
 
-    init(mealID: String) {
-        _viewModel = StateObject(wrappedValue: MealDetailViewModel(mealID: mealID))
+    init(mealID: String, environment: AppEnvironment) {
+        _viewModel = StateObject(
+            wrappedValue: MealDetailViewModel(
+                mealID: mealID,
+                environment: environment
+            )
+        )
     }
 
     var body: some View {

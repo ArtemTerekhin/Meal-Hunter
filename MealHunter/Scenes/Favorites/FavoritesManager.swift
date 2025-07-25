@@ -8,7 +8,6 @@
 import Foundation
 import SwiftData
 
-@MainActor
 protocol FavoritesManagerProtocol: ObservableObject {
     var favorites: [FavoriteMeal] { get }
     func setContext(_ context: ModelContext)
@@ -68,31 +67,5 @@ final class FavoritesManager: ObservableObject, FavoritesManagerProtocol {
         } catch {
             print("Save failed: \(error)")
         }
-    }
-}
-
-final class MockFavoritesManager: FavoritesManagerProtocol {
-    @Published var favorites: [FavoriteMeal] = []
-
-    func setContext(_ context: ModelContext) {
-        // noop
-    }
-
-    func fetchFavorites() {
-        // noop
-    }
-
-    func isFavorite(id: String) -> Bool {
-        favorites.contains { $0.id == id }
-    }
-
-    func add(id: String) {
-        if !favorites.contains(where: { $0.id == id }) {
-            favorites.append(FavoriteMeal(id: id))
-        }
-    }
-
-    func remove(id: String) {
-        favorites.removeAll { $0.id == id }
     }
 }

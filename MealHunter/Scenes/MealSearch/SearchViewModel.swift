@@ -9,13 +9,22 @@ import Foundation
 
 @MainActor
 final class SearchViewModel: ObservableObject {
-    @Published var query: String = ""
+    @Published var query: String
     @Published var meals: [MealSummary] = []
     @Published var isLoading = false
     @Published var errorMessage: String?
     @Published var randomMealId: String?
 
     private var cachedMeals: [MealSummary] = []
+    private let apiService: APIServiceProtocol
+
+    init(
+        query: String = "",
+        environment: AppEnvironment
+    ) {
+        self.query = query
+        self.apiService = environment.apiService
+    }
 
     func loadInitialMeals() async {
         await loadMeals(from: .searchByFirstLetter("b"), cache: true)

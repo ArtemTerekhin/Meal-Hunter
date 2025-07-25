@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct MainTabView: View {
+    let environment: AppEnvironment
+
     enum Tab: Int {
         case favorites = 0
         case search = 1
@@ -17,14 +19,14 @@ struct MainTabView: View {
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            FavoritesView()
+            FavoritesView(environment: environment)
                 .tabItem {
                     Image(systemName: "star.fill")
                     Text("Favorites")
                 }
                 .tag(Tab.favorites)
 
-            SearchView()
+            SearchView(environment: environment)
                 .tabItem {
                     Image(systemName: "fork.knife")
                     Text("Search")

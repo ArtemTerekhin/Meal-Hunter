@@ -8,7 +8,13 @@
 import SwiftUI
 
 struct SearchView: View {
-    @StateObject private var viewModel = SearchViewModel()
+    @StateObject private var viewModel: SearchViewModel
+    let environment: AppEnvironment
+
+    init(environment: AppEnvironment) {
+        _viewModel = StateObject(wrappedValue: SearchViewModel(environment: environment))
+        self.environment = environment
+    }
 
     var body: some View {
         NavigationStack {
@@ -45,7 +51,7 @@ struct SearchView: View {
                 set: { if !$0 { viewModel.randomMealId = nil } }
             )) {
                 if let id = viewModel.randomMealId {
-                    MealDetailView(mealID: id)
+                    MealDetailView(mealID: id, environment: environment)
                 }
             }
         }
@@ -61,7 +67,12 @@ struct SearchView: View {
             EmptyViewState(message: "No meals found.")
         } else {
             List(viewModel.meals) { meal in
-                NavigationLink(destination: MealDetailView(mealID: meal.id)) {
+                NavigationLink(
+                    destination: MealDetailView(
+                        mealID: meal.id,
+                        environment: environment
+                    )
+                ) {
                     HStack {
                         RemoteImageView(url: meal.thumbnailURL, width: 60, height: 60)
                         Text(meal.name)

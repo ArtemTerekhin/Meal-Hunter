@@ -16,21 +16,14 @@ final class MealDetailViewModel: ObservableObject {
     @Published var showAlert = false
     @Published private(set) var isFavorite = false
 
-    private var favoritesManager = FavoritesManager.shared
+    private var favoritesManager: FavoritesManagerProtocol
     private let service: MealAPIServiceProtocol
     private let mealID: String
 
-    init(
-        mealID: String,
-        service: MealAPIServiceProtocol = MealAPIService()
-    ) {
+    init(mealID: String, environment: AppEnvironment) {
         self.mealID = mealID
-        self.service = service
-        setupFavoritesManager()
-    }
-
-    func setupFavoritesManager() {
-        favoritesManager = FavoritesManager.shared
+        self.service = environment.mealAPIService
+        self.favoritesManager = environment.favoritesManager
     }
 
     func setContext(_ context: ModelContext) {
